@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 import java.util.Objects;
 
 @Configuration
-@PropertySource("classpath:persistence-sqlite.properties")
+@PropertySource("classpath:persistence.properties")
 public class ApplicationConfiguration {
 
     private final Environment env;
