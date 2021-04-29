@@ -1,22 +1,24 @@
 package ru.misterparser.nanopoolstats;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import ru.misterparser.nanopoolstats.dao.BlockDao;
 import ru.misterparser.nanopoolstats.entity.BlockEntity;
-import ru.misterparser.nanopoolstats.service.BlockService;
-import ru.misterparser.nanopoolstats.service.BlockServiceImpl;
-import ru.misterparser.nanopoolstats.service.NanopoolStats;
-import ru.misterparser.nanopoolstats.service.NanopoolStatsCommandLineRunner;
+import ru.misterparser.nanopoolstats.entity.RewardStatsByDay;
+import ru.misterparser.nanopoolstats.service.*;
 
 import javax.sql.DataSource;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @Configuration
@@ -45,8 +47,8 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public NanopoolStatsCommandLineRunner commandLineRunner(ConfigurableApplicationContext ctx, NanopoolStats nanopoolStats, BlockService blockService) {
-        return new NanopoolStatsCommandLineRunner(ctx, nanopoolStats, blockService);
+    public CommandLineRunner commandLineRunner(TaskScheduler taskScheduler, RunnableTask runnableTask) {
+        return args -> taskScheduler.scheduleAtFixedRate(runnableTask, Duration.of(30, ChronoUnit.SECONDS));
     }
 
     @Bean
@@ -65,5 +67,18 @@ public class ApplicationConfiguration {
             request.getHeaders().add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36");
             return execution.execute(request, body);
         })).build();
+    }
+
+    @Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(1);
+        threadPoolTaskScheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
+        return threadPoolTaskScheduler;
+    }
+
+    @Bean
+    public RunnableTask runnableTask(NanopoolStats nanopoolStats, BlockService blockService, ExcelService excelService) {
+        return new RunnableTask(nanopoolStats, blockService, excelService);
     }
 }
