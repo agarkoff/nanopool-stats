@@ -30,11 +30,21 @@ public class NanopoolStats {
         log.debug("Download block stats from Nanopool");
         int offset = 0;
         boolean empty = false;
-        while (!empty) {
+        boolean enough = false;
+        while (!(empty || enough)) {
             List<Block> blocks = loadPage(offset);
+            long oldCount = blockService.count();
             blockService.saveAll(blocks.stream().map(this::fromModel).collect(Collectors.toList()));
+            long newCount = blockService.count();
+            enough = oldCount == newCount;
             empty = blocks.isEmpty();
             offset += LIMIT;
+            if (empty) {
+                log.debug("End of statistics reached");
+            }
+            if (enough) {
+                log.debug("All new blocks loaded");
+            }
         }
     }
 

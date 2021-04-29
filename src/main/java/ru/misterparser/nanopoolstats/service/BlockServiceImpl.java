@@ -15,6 +15,11 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    public long count() {
+        return blockDao.count();
+    }
+
+    @Override
     public void saveAll(Collection<BlockEntity> blocks) {
         blockDao.saveAll(blocks);
     }

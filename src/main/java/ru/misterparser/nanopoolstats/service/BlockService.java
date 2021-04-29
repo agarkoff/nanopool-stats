@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface BlockService {
+    long count();
     void saveAll(Collection<BlockEntity> blocks);
     List<BlockEntity> findAll();
 }
