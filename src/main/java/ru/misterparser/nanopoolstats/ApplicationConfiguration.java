@@ -12,6 +12,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import ru.misterparser.nanopoolstats.dao.BlockDao;
+import ru.misterparser.nanopoolstats.dao.RewardStatsByDayDao;
 import ru.misterparser.nanopoolstats.entity.BlockEntity;
 import ru.misterparser.nanopoolstats.entity.RewardStatsByDay;
 import ru.misterparser.nanopoolstats.service.*;
@@ -52,13 +53,18 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public BlockService blockService(BlockDao blockDao) {
-        return new BlockServiceImpl(blockDao);
+    public BlockServiceImpl blockService(BlockDao blockDao, RewardStatsByDayDao rewardStatsByDayDao) {
+        return new BlockServiceImpl(blockDao, rewardStatsByDayDao);
     }
 
     @Bean
     public JpaRepositoryFactoryBean<BlockDao, BlockEntity, Long> blockDao() {
         return new JpaRepositoryFactoryBean<>(BlockDao.class);
+    }
+
+    @Bean
+    public JpaRepositoryFactoryBean<RewardStatsByDayDao, RewardStatsByDay, String> rewardStatsByDayDao() {
+        return new JpaRepositoryFactoryBean<>(RewardStatsByDayDao.class);
     }
 
     @Bean

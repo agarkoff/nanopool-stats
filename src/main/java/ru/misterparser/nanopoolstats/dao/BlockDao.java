@@ -8,7 +8,4 @@ import java.util.List;
 public interface BlockDao extends JpaRepository<BlockEntity, Long> {
 
     List<BlockEntity> findAllByOrderByBlockNumber();
-
-//    @Query("select RewardStatsByMonth from blocks")
-//    List<RewardStatsByMonth> rewardByMonth();
 }
