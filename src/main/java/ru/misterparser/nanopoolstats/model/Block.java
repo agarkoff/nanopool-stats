@@ -18,7 +18,7 @@ public class Block implements Comparable<Block> {
 
     private BigDecimal value;
 
-    private int status;
+    private Status status;
 
     private String miner;
 
@@ -38,7 +38,7 @@ public class Block implements Comparable<Block> {
         return value;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 

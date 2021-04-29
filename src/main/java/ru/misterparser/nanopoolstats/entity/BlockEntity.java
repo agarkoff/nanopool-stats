@@ -1,8 +1,8 @@
 package ru.misterparser.nanopoolstats.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import ru.misterparser.nanopoolstats.model.Status;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -19,7 +19,8 @@ public class BlockEntity {
 
     private BigDecimal value;
 
-    private int status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     private String miner;
 
@@ -55,11 +56,11 @@ public class BlockEntity {
         this.value = value;
     }
 
-    public int getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
