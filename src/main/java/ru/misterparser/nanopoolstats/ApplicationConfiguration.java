@@ -87,4 +87,9 @@ public class ApplicationConfiguration {
     public RunnableTask runnableTask(NanopoolStats nanopoolStats, BlockService blockService, ExcelService excelService) {
         return new RunnableTask(nanopoolStats, blockService, excelService);
     }
+
+    @Bean
+    public ExcelServiceImpl excelService() {
+        return new ExcelServiceImpl();
+    }
 }
